@@ -1,4 +1,4 @@
-package com.github.cesar1287.class1dhfinalproject.ui.home
+package com.github.cesar1287.class1dhfinalproject.features.home.view
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -6,14 +6,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
-import com.github.cesar1287.class1dhfinalproject.R
 import com.github.cesar1287.class1dhfinalproject.databinding.FragmentHomeBinding
-import com.github.cesar1287.class1dhfinalproject.ui.MainViewModel
+import com.github.cesar1287.class1dhfinalproject.features.home.viewmodel.HomeViewModel
 
 class HomeFragment : Fragment() {
 
     private var binding: FragmentHomeBinding? = null
-    private lateinit var viewModel: MainViewModel
+    private lateinit var viewModel: HomeViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -28,11 +27,9 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         activity?.let {
-            viewModel = ViewModelProvider(it)[MainViewModel::class.java]
+            viewModel = ViewModelProvider(it)[HomeViewModel::class.java]
 
-            viewModel.test.observe(it, {
-
-            })
+            viewModel.getNowPlayingMovies()
         }
     }
 
