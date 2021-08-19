@@ -1,6 +1,5 @@
 package com.github.cesar1287.class1dhfinalproject.features.home.usecase
 
-import com.github.cesar1287.class1dhfinalproject.api.ApiService
 import com.github.cesar1287.class1dhfinalproject.extensions.getFullImageUrl
 import com.github.cesar1287.class1dhfinalproject.features.home.repository.HomeRepository
 import com.github.cesar1287.class1dhfinalproject.model.NowPlaying
@@ -10,8 +9,8 @@ class HomeUseCase {
 
     private val homeRepository = HomeRepository()
 
-    suspend fun getNowPlayingMovies() {
-        when(val responseApi = homeRepository.getNowPlayingMovies()) {
+    suspend fun getNowPlayingMovies(): ResponseApi {
+        return when (val responseApi = homeRepository.getNowPlayingMovies()) {
             is ResponseApi.Success -> {
                 val data = responseApi.data as? NowPlaying
                 val result = data?.results?.map {
@@ -19,11 +18,15 @@ class HomeUseCase {
                     it.poster_path = it.poster_path.getFullImageUrl()
                     it
                 }
-                result
+                ResponseApi.Success(result)
             }
             is ResponseApi.Error -> {
-
+                responseApi
             }
         }
+    }
+
+    suspend fun getPopularMovies(): ResponseApi {
+        return homeRepository.getPopularMovies()
     }
 }
