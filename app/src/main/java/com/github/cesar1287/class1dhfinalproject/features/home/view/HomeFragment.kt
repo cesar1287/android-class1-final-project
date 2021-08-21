@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
 import com.github.cesar1287.class1dhfinalproject.databinding.FragmentHomeBinding
 import com.github.cesar1287.class1dhfinalproject.features.home.viewmodel.HomeViewModel
@@ -30,6 +31,8 @@ class HomeFragment : Fragment() {
         activity?.let {
             viewModel = ViewModelProvider(it)[HomeViewModel::class.java]
 
+            viewModel.command = MutableLiveData()
+
             viewModel.getNowPlayingMovies()
 
             viewModel.getPopularMovies()
@@ -40,7 +43,9 @@ class HomeFragment : Fragment() {
 
     private fun setupObservables() {
         viewModel.onSuccessNowPlaying.observe(viewLifecycleOwner, {
-            Log.i("teste", it.toString())
+            it?.let {
+                viewModel.getMovieById(it.first().id)
+            }
         })
 
         viewModel.onErrorNowPlaying.observe(viewLifecycleOwner, {

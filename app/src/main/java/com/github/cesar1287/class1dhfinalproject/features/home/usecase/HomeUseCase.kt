@@ -26,7 +26,9 @@ class HomeUseCase {
         }
     }
 
-    suspend fun getPopularMovies(): ResponseApi {
-        return homeRepository.getPopularMovies()
-    }
+    suspend fun getPopularMovies() =
+        homeRepository.getPopularMovies()
+
+    suspend fun getMovieById(id: Int) =
+        homeRepository.getMovieById(id)
 }

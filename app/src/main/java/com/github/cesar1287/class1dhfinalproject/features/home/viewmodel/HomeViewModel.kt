@@ -71,4 +71,15 @@ class HomeViewModel : BaseViewModel() {
             )
         }
     }
+
+    fun getMovieById(id: Int) {
+        viewModelScope.launch {
+            callApi(
+                suspend { homeUseCase.getMovieById(id) },
+                onSuccess = {
+                    it
+                }
+            )
+        }
+    }
 }
