@@ -8,10 +8,16 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.github.cesar1287.class1dhfinalproject.adapter.NowPlayingAdapter
+import com.github.cesar1287.class1dhfinalproject.base.BaseFragment
 import com.github.cesar1287.class1dhfinalproject.databinding.FragmentHomeBinding
 import com.github.cesar1287.class1dhfinalproject.features.home.viewmodel.HomeViewModel
+import com.github.cesar1287.class1dhfinalproject.utils.Command
+import com.google.android.material.snackbar.Snackbar
 
-class HomeFragment : Fragment() {
+class HomeFragment : BaseFragment() {
 
     private var binding: FragmentHomeBinding? = null
     private lateinit var viewModel: HomeViewModel
@@ -31,7 +37,7 @@ class HomeFragment : Fragment() {
         activity?.let {
             viewModel = ViewModelProvider(it)[HomeViewModel::class.java]
 
-            viewModel.command = MutableLiveData()
+            viewModel.command = command
 
             viewModel.getNowPlayingMovies()
 
@@ -43,8 +49,21 @@ class HomeFragment : Fragment() {
 
     private fun setupObservables() {
         viewModel.onSuccessNowPlaying.observe(viewLifecycleOwner, {
-            it?.let {
-                viewModel.getMovieById(it.first().id)
+            it?.let { nowPlayingList ->
+                val nowPlayingAdapter = NowPlayingAdapter(
+                    nowPlayingList = nowPlayingList
+                ) { movie ->
+                    viewModel.getMovieById(movie.id)
+                }
+
+                binding?.let {
+                    with(it) {
+                        rvHomeNowPlaying.apply {
+                            layoutManager = LinearLayoutManager(context)
+                            adapter = nowPlayingAdapter
+                        }
+                    }
+                }
             }
         })
 
@@ -65,6 +84,23 @@ class HomeFragment : Fragment() {
         viewModel.onErrorPopular.observe(viewLifecycleOwner, {
             it
         })
+
+        viewModel.command.observe(viewLifecycleOwner, {
+            when (it) {
+                is Command.Loading -> {
+
+                }
+                is Command.Error -> {
+                    binding?.let { bindingNonNull ->
+                        Snackbar.make(
+                            bindingNonNull.rvHomeNowPlaying,
+                            getString(it.error),
+                            Snackbar.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+            }
+        })
     }
 
     override fun onDestroyView() {
@@ -72,4 +108,7 @@ class HomeFragment : Fragment() {
 
         binding = null
     }
+
+    override var command: MutableLiveData<Command> = MutableLiveData()
+
 }

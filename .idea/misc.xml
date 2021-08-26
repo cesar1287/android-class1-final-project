@@ -3,8 +3,10 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="app/src/main/res/drawable/ic_baseline_share_24.xml" value="0.2598958333333333" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.16168478260869565" />
         <entry key="app/src/main/res/layout/fragment_home.xml" value="0.10346559517830237" />
+        <entry key="app/src/main/res/layout/watch_card_item.xml" value="0.21549643651192693" />
       </map>
     </option>
   </component>
