@@ -1,20 +1,22 @@
 package com.github.cesar1287.class1dhfinalproject.features.home.view
 
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.GridLayoutManager
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.github.cesar1287.class1dhfinalproject.R
 import com.github.cesar1287.class1dhfinalproject.adapter.NowPlayingAdapter
 import com.github.cesar1287.class1dhfinalproject.base.BaseFragment
 import com.github.cesar1287.class1dhfinalproject.databinding.FragmentHomeBinding
 import com.github.cesar1287.class1dhfinalproject.features.home.viewmodel.HomeViewModel
 import com.github.cesar1287.class1dhfinalproject.utils.Command
+import com.github.cesar1287.class1dhfinalproject.utils.ConstantsApp.Home.KEY_BUNDLE_MOVIE_ID
 import com.google.android.material.snackbar.Snackbar
 
 class HomeFragment : BaseFragment() {
@@ -53,11 +55,16 @@ class HomeFragment : BaseFragment() {
                 val nowPlayingAdapter = NowPlayingAdapter(
                     nowPlayingList = nowPlayingList
                 ) { movie ->
-                    viewModel.getMovieById(movie.id)
+                    val bundle = Bundle()
+                    bundle.putInt(KEY_BUNDLE_MOVIE_ID, movie.id)
+                    findNavController().navigate(
+                        R.id.action_homeFragment_to_movieDetailFragment,
+                        bundle
+                    )
                 }
 
-                binding?.let {
-                    with(it) {
+                binding?.let { bindingNonNull ->
+                    with(bindingNonNull) {
                         rvHomeNowPlaying.apply {
                             layoutManager = LinearLayoutManager(context)
                             adapter = nowPlayingAdapter

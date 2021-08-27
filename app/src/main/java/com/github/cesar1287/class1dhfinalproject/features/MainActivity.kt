@@ -1,12 +1,10 @@
 package com.github.cesar1287.class1dhfinalproject.features
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.lifecycle.ViewModelProvider
+import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.fragment.NavHostFragment
+import com.github.cesar1287.class1dhfinalproject.R
 import com.github.cesar1287.class1dhfinalproject.databinding.ActivityMainBinding
-import android.R
-import com.github.cesar1287.class1dhfinalproject.features.home.view.HomeFragment
-
 
 class MainActivity : AppCompatActivity() {
 
@@ -17,9 +15,12 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val fragment = HomeFragment()
-        supportFragmentManager.beginTransaction()
-            .replace(binding.container.id, fragment)
-            .addToBackStack(null).commit()
+        setupBottomNavigation()
+    }
+
+    private fun setupBottomNavigation() {
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.host_fragment) as NavHostFragment
+        val navController = navHostFragment.navController
     }
 }

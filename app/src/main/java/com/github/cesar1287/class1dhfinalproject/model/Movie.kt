@@ -2,7 +2,7 @@ package com.github.cesar1287.class1dhfinalproject.model
 
 data class Movie(
     val adult: Boolean,
-    val backdrop_path: String,
+    var backdrop_path: String? = null,
     val belongs_to_collection: Any?,
     val budget: Int,
     val genres: List<Genre>,
@@ -13,7 +13,7 @@ data class Movie(
     val original_title: String,
     val overview: String,
     val popularity: Double,
-    val poster_path: String,
+    var poster_path: String? = null,
     val production_companies: List<ProductionCompany>,
     val production_countries: List<ProductionCountry>,
     val release_date: String,
