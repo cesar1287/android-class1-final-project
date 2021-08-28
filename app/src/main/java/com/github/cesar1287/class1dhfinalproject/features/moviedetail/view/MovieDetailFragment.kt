@@ -80,6 +80,10 @@ class MovieDetailFragment : BaseFragment() {
         binding?.btMovieDetailTryAgain?.setOnClickListener {
             viewModel.getMovieById(movieId)
         }
+
+        binding?.btMovieDetailsBackIcon?.setOnClickListener {
+            activity?.onBackPressed()
+        }
     }
 
     override var command: MutableLiveData<Command> = MutableLiveData()

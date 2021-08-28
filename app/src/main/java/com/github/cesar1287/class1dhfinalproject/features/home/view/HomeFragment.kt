@@ -10,6 +10,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.github.cesar1287.class1dhfinalproject.R
 import com.github.cesar1287.class1dhfinalproject.adapter.NowPlayingAdapter
 import com.github.cesar1287.class1dhfinalproject.base.BaseFragment
@@ -69,6 +70,10 @@ class HomeFragment : BaseFragment() {
                             layoutManager = LinearLayoutManager(context)
                             adapter = nowPlayingAdapter
                         }
+
+                        rvHomeNowPlaying.adapter?.stateRestorationPolicy = RecyclerView
+                            .Adapter.StateRestorationPolicy
+                            .PREVENT_WHEN_EMPTY
                     }
                 }
             }
