@@ -2,74 +2,44 @@ package com.github.cesar1287.class1dhfinalproject.features.home.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.LivePagedListBuilder
+import androidx.paging.PageKeyedDataSource
+import androidx.paging.PagedList
 import com.github.cesar1287.class1dhfinalproject.base.BaseViewModel
+import com.github.cesar1287.class1dhfinalproject.features.home.paging.HomeDataSourceFactory
+import com.github.cesar1287.class1dhfinalproject.features.home.paging.HomePageKeyedDataSource
+import com.github.cesar1287.class1dhfinalproject.features.home.repository.HomeRepository
 import com.github.cesar1287.class1dhfinalproject.features.home.usecase.HomeUseCase
 import com.github.cesar1287.class1dhfinalproject.model.Popular
 import com.github.cesar1287.class1dhfinalproject.model.Result
-import com.github.cesar1287.class1dhfinalproject.utils.ResponseApi
-import kotlinx.coroutines.GlobalScope
+import com.github.cesar1287.class1dhfinalproject.utils.ConstantsApp.Home.PAGE_SIZE
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 
 class HomeViewModel : BaseViewModel() {
 
+    var moviesPagedList: LiveData<PagedList<Result>>? = null
+    private var watchMoviesLiveDataSource: LiveData<PageKeyedDataSource<Int, Result>>? = null
+
     private val homeUseCase = HomeUseCase()
+    private val homeRepository = HomeRepository()
 
-    private val _onSuccessNowPlaying: MutableLiveData<List<Result>> =
-        MutableLiveData()
-    val onSuccessNowPlaying: LiveData<List<Result>>
-        get() = _onSuccessNowPlaying
+    init {
+        val pagedListConfig = PagedList.Config.Builder()
+            .setEnablePlaceholders(false)
+            .setPageSize(PAGE_SIZE).build()
 
-    private val _onErrorNowPlaying: MutableLiveData<Int> =
-        MutableLiveData()
-    val onErrorNowPlaying: LiveData<Int>
-        get() = _onErrorNowPlaying
 
-    private val _onCustomErrorNowPlaying: MutableLiveData<Boolean> =
-        MutableLiveData()
-    val onCustomErrorNowPlaying: LiveData<Boolean>
-        get() = _onCustomErrorNowPlaying
+        val homePageKeyedDataSource = HomePageKeyedDataSource(
+            homeUseCase = homeUseCase,
+            homeRepository = homeRepository
+        )
+        val homeDataSourceFactory = HomeDataSourceFactory(homePageKeyedDataSource)
 
-    private val _onSuccessPopular: MutableLiveData<Popular> =
-        MutableLiveData()
-    val onSuccessPopular: LiveData<Popular>
-        get() = _onSuccessPopular
+        watchMoviesLiveDataSource = homeDataSourceFactory.getLiveDataSource()
+        moviesPagedList = LivePagedListBuilder(homeDataSourceFactory, pagedListConfig)
+            .build()
 
-    private val _onErrorPopular: MutableLiveData<Int> =
-        MutableLiveData()
-    val onErrorPopular: LiveData<Int>
-        get() = _onErrorPopular
-
-    fun getNowPlayingMovies() {
-        viewModelScope.launch {
-            callApi(
-                suspend { homeUseCase.getNowPlayingMovies() },
-                onSuccess = {
-                    val result = it as? List<*>
-                    _onSuccessNowPlaying.postValue(
-                        result?.filterIsInstance<Result>()
-                    )
-                },
-                onError = {
-                    _onCustomErrorNowPlaying.postValue(true)
-                }
-            )
-        }
-    }
-
-    fun getPopularMovies() {
-        viewModelScope.launch {
-            callApi(
-                suspend { homeUseCase.getPopularMovies() },
-                onSuccess = {
-                    _onSuccessPopular.postValue(
-                        it as? Popular
-                    )
-                }
-            )
-        }
     }
 
     fun getMovieById(id: Int) {
@@ -82,4 +52,34 @@ class HomeViewModel : BaseViewModel() {
             )
         }
     }
+
+//    fun getNowPlayingMovies() {
+//        viewModelScope.launch {
+//            callApi(
+//                suspend { homeUseCase.getNowPlayingMovies() },
+//                onSuccess = {
+//                    val result = it as? List<*>
+//                    _onSuccessNowPlaying.postValue(
+//                        result?.filterIsInstance<Result>()
+//                    )
+//                },
+//                onError = {
+//                    _onCustomErrorNowPlaying.postValue(true)
+//                }
+//            )
+//        }
+//    }
+//
+//    fun getPopularMovies() {
+//        viewModelScope.launch {
+//            callApi(
+//                suspend { homeUseCase.getPopularMovies() },
+//                onSuccess = {
+//                    _onSuccessPopular.postValue(
+//                        it as? Popular
+//                    )
+//                }
+//            )
+//        }
+//    }
 }

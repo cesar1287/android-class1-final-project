@@ -6,9 +6,9 @@ import com.github.cesar1287.class1dhfinalproject.utils.ResponseApi
 
 class HomeRepository : BaseRepository() {
 
-    suspend fun getNowPlayingMovies(): ResponseApi {
+    suspend fun getNowPlayingMovies(page: Int): ResponseApi {
         return safeApiCall {
-            ApiService.tmdbApi.getNowPlayingMovies()
+            ApiService.tmdbApi.getNowPlayingMovies(page)
         }
     }
 

@@ -6,11 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.findNavController
-import androidx.navigation.fragment.NavHostFragment.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.github.cesar1287.class1dhfinalproject.R
 import com.github.cesar1287.class1dhfinalproject.adapter.NowPlayingAdapter
 import com.github.cesar1287.class1dhfinalproject.base.BaseFragment
@@ -24,6 +21,17 @@ class HomeFragment : BaseFragment() {
 
     private var binding: FragmentHomeBinding? = null
     private lateinit var viewModel: HomeViewModel
+
+    private val nowPlayingAdapter: NowPlayingAdapter by lazy {
+        NowPlayingAdapter { movie ->
+            val bundle = Bundle()
+            bundle.putInt(KEY_BUNDLE_MOVIE_ID, movie.id ?: -1)
+            findNavController().navigate(
+                R.id.action_homeFragment_to_movieDetailFragment,
+                bundle
+            )
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -42,59 +50,21 @@ class HomeFragment : BaseFragment() {
 
             viewModel.command = command
 
-            viewModel.getNowPlayingMovies()
-
-            viewModel.getPopularMovies()
-
             setupObservables()
+            setupRecyclerView()
+        }
+    }
+
+    private fun setupRecyclerView() {
+        binding?.rvHomeNowPlaying?.apply {
+            layoutManager = LinearLayoutManager(this.context)
+            adapter = nowPlayingAdapter
         }
     }
 
     private fun setupObservables() {
-        viewModel.onSuccessNowPlaying.observe(viewLifecycleOwner, {
-            it?.let { nowPlayingList ->
-                val nowPlayingAdapter = NowPlayingAdapter(
-                    nowPlayingList = nowPlayingList
-                ) { movie ->
-                    val bundle = Bundle()
-                    bundle.putInt(KEY_BUNDLE_MOVIE_ID, movie.id)
-                    findNavController().navigate(
-                        R.id.action_homeFragment_to_movieDetailFragment,
-                        bundle
-                    )
-                }
-
-                binding?.let { bindingNonNull ->
-                    with(bindingNonNull) {
-                        rvHomeNowPlaying.apply {
-                            layoutManager = LinearLayoutManager(context)
-                            adapter = nowPlayingAdapter
-                        }
-
-                        rvHomeNowPlaying.adapter?.stateRestorationPolicy = RecyclerView
-                            .Adapter.StateRestorationPolicy
-                            .PREVENT_WHEN_EMPTY
-                    }
-                }
-            }
-        })
-
-        viewModel.onErrorNowPlaying.observe(viewLifecycleOwner, {
-            it
-        })
-
-        viewModel.onCustomErrorNowPlaying.observe(viewLifecycleOwner, {
-            //abrir uma activity
-            //abrir um viewGroup
-            //mensagem via SnackBar
-        })
-
-        viewModel.onSuccessPopular.observe(viewLifecycleOwner, {
-            it
-        })
-
-        viewModel.onErrorPopular.observe(viewLifecycleOwner, {
-            it
+        viewModel.moviesPagedList?.observe(viewLifecycleOwner, {
+            nowPlayingAdapter.submitList(it)
         })
 
         viewModel.command.observe(viewLifecycleOwner, {

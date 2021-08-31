@@ -2,6 +2,7 @@ package com.github.cesar1287.class1dhfinalproject.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.github.cesar1287.class1dhfinalproject.R
@@ -9,9 +10,8 @@ import com.github.cesar1287.class1dhfinalproject.databinding.WatchCardItemBindin
 import com.github.cesar1287.class1dhfinalproject.model.Result
 
 class NowPlayingAdapter(
-    private val nowPlayingList: List<Result>,
     private val onClickListener: (movie: Result) -> Unit
-) : RecyclerView.Adapter<NowPlayingAdapter.ViewHolder>() {
+) : PagedListAdapter<Result, NowPlayingAdapter.ViewHolder>(Result.DIFF_CALLBACK) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = WatchCardItemBinding
@@ -20,29 +20,29 @@ class NowPlayingAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(nowPlayingList[position], onClickListener)
+        holder.bind(getItem(position), onClickListener)
     }
-
-    override fun getItemCount() = nowPlayingList.size
 
     class ViewHolder(
         private val binding: WatchCardItemBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(
-            movie: Result,
+            movie: Result?,
             onClickListener: (movie: Result) -> Unit,
         ) {
             with(binding) {
-                tvWatchTitle.text = movie.title
-                cvWatch.setOnClickListener {
-                    onClickListener(movie)
+                movie?.let {
+                    tvWatchTitle.text = movie.title
+                    cvWatch.setOnClickListener {
+                        onClickListener(movie)
+                    }
+                    Glide
+                        .with(itemView.context)
+                        .load(movie.poster_path)
+                        .placeholder(R.drawable.no_image_available)
+                        .into(ivWatchImage)
                 }
-                Glide
-                    .with(itemView.context)
-                    .load(movie.poster_path)
-                    .placeholder(R.drawable.no_image_available)
-                    .into(ivWatchImage)
             }
         }
     }
