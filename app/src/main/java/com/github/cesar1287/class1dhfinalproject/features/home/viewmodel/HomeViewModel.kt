@@ -1,7 +1,6 @@
 package com.github.cesar1287.class1dhfinalproject.features.home.viewmodel
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PageKeyedDataSource
@@ -11,7 +10,6 @@ import com.github.cesar1287.class1dhfinalproject.features.home.paging.HomeDataSo
 import com.github.cesar1287.class1dhfinalproject.features.home.paging.HomePageKeyedDataSource
 import com.github.cesar1287.class1dhfinalproject.features.home.repository.HomeRepository
 import com.github.cesar1287.class1dhfinalproject.features.home.usecase.HomeUseCase
-import com.github.cesar1287.class1dhfinalproject.model.Popular
 import com.github.cesar1287.class1dhfinalproject.model.Result
 import com.github.cesar1287.class1dhfinalproject.utils.ConstantsApp.Home.PAGE_SIZE
 import kotlinx.coroutines.launch
@@ -28,7 +26,6 @@ class HomeViewModel : BaseViewModel() {
         val pagedListConfig = PagedList.Config.Builder()
             .setEnablePlaceholders(false)
             .setPageSize(PAGE_SIZE).build()
-
 
         val homePageKeyedDataSource = HomePageKeyedDataSource(
             homeUseCase = homeUseCase,
@@ -53,7 +50,7 @@ class HomeViewModel : BaseViewModel() {
         }
     }
 
-//    fun getNowPlayingMovies() {
+//x    fun getNowPlayingMovies() {
 //        viewModelScope.launch {
 //            callApi(
 //                suspend { homeUseCase.getNowPlayingMovies() },

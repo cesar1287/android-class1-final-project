@@ -16,7 +16,7 @@ class HomeUseCase {
             is ResponseApi.Success -> {
                 val data = responseApi.data as? NowPlaying
                 val result = data?.results?.map {
-                    it.backdrop_path = it.backdrop_path?.getFullImageUrl()
+                    it.backdropPath = it.backdropPath?.getFullImageUrl()
                     it.poster_path = it.poster_path?.getFullImageUrl()
                     it
                 }
@@ -36,7 +36,7 @@ class HomeUseCase {
 
     fun setupMoviesList(list: NowPlaying?): List<Result> {
         return list?.results?.map {
-            it.backdrop_path = it.backdrop_path?.getFullImageUrl()
+            it.backdropPath = it.backdropPath?.getFullImageUrl()
             it.poster_path = it.poster_path?.getFullImageUrl()
             it
         } ?: listOf()
