@@ -3,6 +3,8 @@ package com.github.cesar1287.class1dhfinalproject.api
 import com.github.cesar1287.class1dhfinalproject.BuildConfig
 import com.github.cesar1287.class1dhfinalproject.utils.ConstantsApp.Api.API_TOKEN
 import com.github.cesar1287.class1dhfinalproject.utils.ConstantsApp.Api.API_TOKEN_KEY
+import com.github.cesar1287.class1dhfinalproject.utils.ConstantsApp.Api.HEADER_CONTENT_KEY
+import com.github.cesar1287.class1dhfinalproject.utils.ConstantsApp.Api.HEADER_CONTENT_VALUE
 import com.github.cesar1287.class1dhfinalproject.utils.ConstantsApp.Api.QUERY_PARAM_LANGUAGE_KEY
 import com.github.cesar1287.class1dhfinalproject.utils.ConstantsApp.Api.QUERY_PARAM_LANGUAGE_VALUE
 import okhttp3.OkHttpClient
@@ -37,10 +39,16 @@ object ApiService {
             .addInterceptor(loggingInterceptor)
             .addInterceptor { chain ->
                 val url = chain.request().url.newBuilder()
-                    .addQueryParameter(API_TOKEN_KEY, API_TOKEN)
                     .addQueryParameter(QUERY_PARAM_LANGUAGE_KEY, QUERY_PARAM_LANGUAGE_VALUE)
                     .build()
                 val newRequest = chain.request().newBuilder().url(url).build()
+                chain.proceed(newRequest)
+            }
+            .addInterceptor { chain ->
+                val headers = chain.request().newBuilder()
+                    .addHeader(HEADER_CONTENT_KEY, HEADER_CONTENT_VALUE)
+                    .addHeader(API_TOKEN_KEY, "Bearer $API_TOKEN")
+                val newRequest = headers.build()
                 chain.proceed(newRequest)
             }
         return interceptor.build()
