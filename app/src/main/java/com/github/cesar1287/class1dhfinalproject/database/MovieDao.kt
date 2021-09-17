@@ -10,10 +10,10 @@ import com.github.cesar1287.class1dhfinalproject.model.Result
 @Dao
 interface MovieDao {
 
-    @Query("SELECT * FROM result")
+    @Query("SELECT * FROM movie")
     suspend fun getAllMovies(): List<Result>
 
-    @Query("SELECT * FROM result WHERE id = :movieId")
+    @Query("SELECT * FROM movie WHERE id = :movieId")
     suspend fun loadMovieById(movieId: Int): List<Result>
 
     @Insert(onConflict = REPLACE)
