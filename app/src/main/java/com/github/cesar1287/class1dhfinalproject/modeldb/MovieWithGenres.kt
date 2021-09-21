@@ -9,5 +9,5 @@ data class MovieWithGenres(
         parentColumn = "movieId",
         entityColumn = "genreId"
     )
-    val genres: List<Genre>
+    val genres: List<GenreDb>
 )

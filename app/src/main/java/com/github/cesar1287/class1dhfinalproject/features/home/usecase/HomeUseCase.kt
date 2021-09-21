@@ -1,15 +1,19 @@
 package com.github.cesar1287.class1dhfinalproject.features.home.usecase
 
+import android.app.Application
 import com.github.cesar1287.class1dhfinalproject.extensions.getFullImageUrl
 import com.github.cesar1287.class1dhfinalproject.features.home.repository.HomeRepository
+import com.github.cesar1287.class1dhfinalproject.model.GenreInfo
 import com.github.cesar1287.class1dhfinalproject.model.NowPlaying
 import com.github.cesar1287.class1dhfinalproject.model.Result
 import com.github.cesar1287.class1dhfinalproject.utils.ConstantsApp.Home.FIRST_PAGE
 import com.github.cesar1287.class1dhfinalproject.utils.ResponseApi
 
-class HomeUseCase {
+class HomeUseCase(
+    private val application: Application
+) {
 
-    private val homeRepository = HomeRepository()
+    private val homeRepository = HomeRepository(application)
 
     suspend fun getNowPlayingMovies(): ResponseApi {
         return when (val responseApi = homeRepository.getNowPlayingMovies(FIRST_PAGE)) {
@@ -40,5 +44,22 @@ class HomeUseCase {
             it.poster_path = it.poster_path?.getFullImageUrl()
             it
         } ?: listOf()
+    }
+
+    suspend fun getGenres(): ResponseApi {
+        return when(val response = homeRepository.getGenres()) {
+            is ResponseApi.Success -> {
+                val genreInfo = response.data as? GenreInfo
+                homeRepository.saveGenresDatabase(genreInfo?.genres)
+                response
+            }
+            is ResponseApi.Error -> {
+                response
+            }
+        }
+    }
+
+    suspend fun saveMoviesDb(movies: List<Result>) {
+        homeRepository.saveMoviesDb(movies)
     }
 }

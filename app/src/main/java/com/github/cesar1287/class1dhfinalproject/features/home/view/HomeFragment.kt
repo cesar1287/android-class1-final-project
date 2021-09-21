@@ -11,14 +11,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.cesar1287.class1dhfinalproject.R
 import com.github.cesar1287.class1dhfinalproject.adapter.NowPlayingAdapter
 import com.github.cesar1287.class1dhfinalproject.base.BaseFragment
-import com.github.cesar1287.class1dhfinalproject.database.Class1Database
 import com.github.cesar1287.class1dhfinalproject.databinding.FragmentHomeBinding
 import com.github.cesar1287.class1dhfinalproject.features.home.viewmodel.HomeViewModel
 import com.github.cesar1287.class1dhfinalproject.utils.Command
 import com.github.cesar1287.class1dhfinalproject.utils.ConstantsApp.Home.KEY_BUNDLE_MOVIE_ID
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 
 class HomeFragment : BaseFragment() {
 
@@ -52,6 +49,9 @@ class HomeFragment : BaseFragment() {
             viewModel = ViewModelProvider(it)[HomeViewModel::class.java]
 
             viewModel.command = command
+            viewModel.getGenres()
+
+            //inicio app -> carregar os generos -> paging
 
             setupObservables()
             setupRecyclerView()
@@ -65,16 +65,15 @@ class HomeFragment : BaseFragment() {
         }
     }
 
-    private fun setupObservables() {
+    private fun loadContent() {
         viewModel.moviesPagedList?.observe(viewLifecycleOwner, { list ->
-            GlobalScope.launch {
-                context?.let { contextNonNull ->
-                    Class1Database.getDatabase(
-                        contextNonNull
-                    ).movieDao().getAllMovies()
-                }
-            }
             nowPlayingAdapter.submitList(list)
+        })
+    }
+
+    private fun setupObservables() {
+        viewModel.onGenresLoaded.observe(viewLifecycleOwner, {
+            loadContent()
         })
 
         viewModel.command.observe(viewLifecycleOwner, {

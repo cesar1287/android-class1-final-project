@@ -8,7 +8,7 @@ import kotlinx.parcelize.Parcelize
 
 @Entity(tableName = "genre")
 @Parcelize
-data class Genre(
+data class GenreDb(
     @PrimaryKey
     @ColumnInfo(name = "genreId")
     val id: Int,

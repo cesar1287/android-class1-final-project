@@ -2,10 +2,7 @@ package com.github.cesar1287.class1dhfinalproject.model
 
 import android.os.Parcelable
 import androidx.recyclerview.widget.DiffUtil
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-import com.google.gson.annotations.SerializedName
+import com.github.cesar1287.class1dhfinalproject.modeldb.Movie
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -38,4 +35,22 @@ data class Result(
                 }
             }
     }
+}
+
+fun Result.toMovieDb(): Movie {
+    return Movie(
+        id = this.id,
+        adult = this.adult,
+        backdrop_path = this.backdrop_path,
+        original_language = this.original_language,
+        original_title = this.original_title,
+        overview = this.overview,
+        popularity = this.popularity,
+        poster_path = this.poster_path,
+        release_date = this.release_date,
+        title = this.title,
+        video = this.video,
+        vote_average = this.vote_average,
+        vote_count = this.vote_count
+    )
 }

@@ -1,5 +1,6 @@
 package com.github.cesar1287.class1dhfinalproject.api
 
+import com.github.cesar1287.class1dhfinalproject.model.GenreInfo
 import com.github.cesar1287.class1dhfinalproject.model.Movie
 import com.github.cesar1287.class1dhfinalproject.model.NowPlaying
 import com.github.cesar1287.class1dhfinalproject.model.Popular
@@ -26,4 +27,8 @@ interface TMDBApi {
     suspend fun saveMovie(
         @Body movie: Movie
     ): Response<ResponseBody>
+
+    @GET("genre/movie/list")
+    suspend fun getGenres(
+    ): Response<GenreInfo>
 }

@@ -1,6 +1,8 @@
 package com.github.cesar1287.class1dhfinalproject.features.home.viewmodel
 
+import android.app.Application
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PageKeyedDataSource
@@ -14,13 +16,19 @@ import com.github.cesar1287.class1dhfinalproject.model.Result
 import com.github.cesar1287.class1dhfinalproject.utils.ConstantsApp.Home.PAGE_SIZE
 import kotlinx.coroutines.launch
 
-class HomeViewModel : BaseViewModel() {
+class HomeViewModel(
+    application: Application,
+) : BaseViewModel(application) {
 
     var moviesPagedList: LiveData<PagedList<Result>>? = null
     private var watchMoviesLiveDataSource: LiveData<PageKeyedDataSource<Int, Result>>? = null
 
-    private val homeUseCase = HomeUseCase()
-    private val homeRepository = HomeRepository()
+    private val homeUseCase = HomeUseCase(getApplication())
+    private val homeRepository = HomeRepository(getApplication<Application>())
+
+    private val _onGenresLoaded: MutableLiveData<Boolean> =  MutableLiveData()
+    val onGenresLoaded: LiveData<Boolean>
+        get() = _onGenresLoaded
 
     init {
         val pagedListConfig = PagedList.Config.Builder()
@@ -39,18 +47,29 @@ class HomeViewModel : BaseViewModel() {
 
     }
 
-    fun getMovieById(id: Int) {
+    fun getGenres() {
         viewModelScope.launch {
             callApi(
-                suspend { homeUseCase.getMovieById(id) },
+                suspend { homeUseCase.getGenres() },
                 onSuccess = {
-                    it
+                    _onGenresLoaded.postValue(true)
                 }
             )
         }
     }
 
-//x    fun getNowPlayingMovies() {
+//    fun getMovieById(id: Int) {
+//        viewModelScope.launch {
+//            callApi(
+//                suspend { homeUseCase.getMovieById(id) },
+//                onSuccess = {
+//                    it
+//                }
+//            )
+//        }
+//    }
+
+//    fun getNowPlayingMovies() {
 //        viewModelScope.launch {
 //            callApi(
 //                suspend { homeUseCase.getNowPlayingMovies() },
