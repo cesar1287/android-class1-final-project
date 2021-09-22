@@ -10,6 +10,8 @@ import com.github.cesar1287.class1dhfinalproject.model.toGenreDb
 import com.github.cesar1287.class1dhfinalproject.model.toMovieDb
 import com.github.cesar1287.class1dhfinalproject.modeldb.GenreDb
 import com.github.cesar1287.class1dhfinalproject.modeldb.Movie
+import com.github.cesar1287.class1dhfinalproject.modeldb.MovieGenreCrossRef
+import com.github.cesar1287.class1dhfinalproject.modeldb.MovieWithGenres
 import com.github.cesar1287.class1dhfinalproject.utils.ResponseApi
 
 class HomeRepository(
@@ -60,8 +62,18 @@ class HomeRepository(
     suspend fun saveMoviesDb(movies: List<Result>) {
         val moviesDb: MutableList<Movie> = mutableListOf()
 
-        movies.forEach {
-            moviesDb.add(it.toMovieDb())
+        movies.forEach { movie ->
+            movie.genre_ids?.forEach { genreId ->
+                val movieGenreCrossRef = MovieGenreCrossRef(
+                    genreId = genreId,
+                    movieId = movie.id ?: -1
+                )
+                Class1Database
+                    .getDatabase(application)
+                    .movieGenreDao()
+                    .insertMovieGenre(movieGenreCrossRef)
+            }
+            moviesDb.add(movie.toMovieDb())
         }
 
         Class1Database
@@ -70,5 +82,10 @@ class HomeRepository(
             .insertAllMovies(
                 moviesDb
             )
+    }
+
+    suspend fun getNowPlayingMoviesFromDb(): List<MovieWithGenres> {
+        val movieDao = Class1Database.getDatabase(application).movieDao()
+        return movieDao.getAllMovies()
     }
 }

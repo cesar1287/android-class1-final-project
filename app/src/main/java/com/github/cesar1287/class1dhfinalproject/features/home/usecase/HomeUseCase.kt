@@ -6,6 +6,7 @@ import com.github.cesar1287.class1dhfinalproject.features.home.repository.HomeRe
 import com.github.cesar1287.class1dhfinalproject.model.GenreInfo
 import com.github.cesar1287.class1dhfinalproject.model.NowPlaying
 import com.github.cesar1287.class1dhfinalproject.model.Result
+import com.github.cesar1287.class1dhfinalproject.modeldb.toResultFromApi
 import com.github.cesar1287.class1dhfinalproject.utils.ConstantsApp.Home.FIRST_PAGE
 import com.github.cesar1287.class1dhfinalproject.utils.ResponseApi
 
@@ -61,5 +62,12 @@ class HomeUseCase(
 
     suspend fun saveMoviesDb(movies: List<Result>) {
         homeRepository.saveMoviesDb(movies)
+    }
+
+    suspend fun getMoviesFromDb(): List<Result> {
+        val movieGenreList = homeRepository.getNowPlayingMoviesFromDb()
+        return movieGenreList.map {
+            it.toResultFromApi()
+        }
     }
 }

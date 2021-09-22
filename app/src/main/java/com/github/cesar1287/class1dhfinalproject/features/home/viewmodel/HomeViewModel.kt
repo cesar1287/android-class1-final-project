@@ -30,6 +30,10 @@ class HomeViewModel(
     val onGenresLoaded: LiveData<Boolean>
         get() = _onGenresLoaded
 
+    private val _onMoviesLoadedFromDb: MutableLiveData<List<Result>> = MutableLiveData()
+    val onMoviesLoadedFromDb: LiveData<List<Result>>
+        get() = _onMoviesLoadedFromDb
+
     init {
         val pagedListConfig = PagedList.Config.Builder()
             .setEnablePlaceholders(false)
@@ -55,6 +59,13 @@ class HomeViewModel(
                     _onGenresLoaded.postValue(true)
                 }
             )
+        }
+    }
+
+    fun getMoviesFromDb() {
+        viewModelScope.launch {
+            val movieGenreList = homeUseCase.getMoviesFromDb()
+            _onMoviesLoadedFromDb.postValue(movieGenreList)
         }
     }
 

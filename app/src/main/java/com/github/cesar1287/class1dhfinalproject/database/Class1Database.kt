@@ -6,13 +6,16 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.github.cesar1287.class1dhfinalproject.modeldb.GenreDb
 import com.github.cesar1287.class1dhfinalproject.modeldb.Movie
+import com.github.cesar1287.class1dhfinalproject.modeldb.MovieGenreCrossRef
 
 object Class1Database {
 
-    @Database(entities = [Movie::class, GenreDb::class], version = 1)
+    @Database(entities = [Movie::class,
+        GenreDb::class, MovieGenreCrossRef::class], version = 1)
     abstract class Class1RoomDatabase : RoomDatabase() {
         abstract fun movieDao(): MovieDao
         abstract fun genreDao(): GenreDao
+        abstract fun movieGenreDao(): MovieGenreCrossRefDao
     }
 
     fun getDatabase(context: Context) : Class1RoomDatabase {
