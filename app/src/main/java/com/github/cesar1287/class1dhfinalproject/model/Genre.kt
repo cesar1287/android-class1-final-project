@@ -10,6 +10,7 @@ data class Genre(
 fun Genre.toGenreDb(): GenreDb {
     return GenreDb(
         id = this.id,
-        name = this.name
+        name = this.name,
+        xpto = "xpto"
     )
 }

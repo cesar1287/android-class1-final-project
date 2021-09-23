@@ -12,5 +12,6 @@ data class GenreDb(
     @PrimaryKey
     @ColumnInfo(name = "genreId")
     val id: Int,
-    val name: String
+    val name: String,
+    val xpto: String?
 ): Parcelable
