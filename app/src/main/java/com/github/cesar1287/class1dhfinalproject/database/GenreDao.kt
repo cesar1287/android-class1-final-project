@@ -1,14 +1,17 @@
 package com.github.cesar1287.class1dhfinalproject.database
 
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
+import androidx.room.*
 import androidx.room.OnConflictStrategy.REPLACE
-import androidx.room.Query
 import com.github.cesar1287.class1dhfinalproject.modeldb.GenreDb
+import com.github.cesar1287.class1dhfinalproject.modeldb.GenreWithMovies
+import com.github.cesar1287.class1dhfinalproject.modeldb.MovieWithGenres
 
 @Dao
 interface GenreDao {
+
+    @Transaction
+    @Query("SELECT * FROM genre")
+    suspend fun getAllMoviesFromGenre(): List<GenreWithMovies>
 
     @Query("SELECT * FROM genre")
     suspend fun getAllGenres(): List<GenreDb>
