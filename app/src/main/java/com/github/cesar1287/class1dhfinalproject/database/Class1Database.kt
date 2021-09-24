@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.github.cesar1287.class1dhfinalproject.modeldb.GenreDb
-import com.github.cesar1287.class1dhfinalproject.modeldb.Movie
+import com.github.cesar1287.class1dhfinalproject.modeldb.MovieDb
 import com.github.cesar1287.class1dhfinalproject.modeldb.MovieGenreCrossRef
 
 object Class1Database {
@@ -18,7 +18,7 @@ object Class1Database {
         }
     }
 
-    @Database(entities = [Movie::class,
+    @Database(entities = [MovieDb::class,
         GenreDb::class, MovieGenreCrossRef::class], version = 2)
     abstract class Class1RoomDatabase : RoomDatabase() {
         abstract fun movieDao(): MovieDao

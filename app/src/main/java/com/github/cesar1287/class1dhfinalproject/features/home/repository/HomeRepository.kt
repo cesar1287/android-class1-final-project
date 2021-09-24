@@ -9,7 +9,7 @@ import com.github.cesar1287.class1dhfinalproject.model.Result
 import com.github.cesar1287.class1dhfinalproject.model.toGenreDb
 import com.github.cesar1287.class1dhfinalproject.model.toMovieDb
 import com.github.cesar1287.class1dhfinalproject.modeldb.GenreDb
-import com.github.cesar1287.class1dhfinalproject.modeldb.Movie
+import com.github.cesar1287.class1dhfinalproject.modeldb.MovieDb
 import com.github.cesar1287.class1dhfinalproject.modeldb.MovieGenreCrossRef
 import com.github.cesar1287.class1dhfinalproject.modeldb.MovieWithGenres
 import com.github.cesar1287.class1dhfinalproject.utils.ResponseApi
@@ -60,7 +60,7 @@ class HomeRepository(
     }
 
     suspend fun saveMoviesDb(movies: List<Result>) {
-        val moviesDb: MutableList<Movie> = mutableListOf()
+        val moviesDb: MutableList<MovieDb> = mutableListOf()
 
         movies.forEach { movie ->
             movie.genre_ids?.forEach { genreId ->

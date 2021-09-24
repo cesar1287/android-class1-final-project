@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -81,8 +82,18 @@ class HomeFragment : BaseFragment() {
         }
     }
 
+    private fun setupRecyclerViewVisibility(
+        isListFromInternetShowing: Boolean
+    ) {
+        binding?.rvHomeNowPlayingDb?.isVisible = !isListFromInternetShowing
+        binding?.rvHomeNowPlaying?.isVisible = isListFromInternetShowing
+    }
+
     private fun loadContent() {
         viewModel.moviesPagedList?.observe(viewLifecycleOwner, { list ->
+            setupRecyclerViewVisibility(
+                isListFromInternetShowing = true
+            )
             nowPlayingAdapter.submitList(list)
         })
     }
@@ -90,6 +101,9 @@ class HomeFragment : BaseFragment() {
     private fun setupObservables() {
         viewModel.onMoviesLoadedFromDb.observe(viewLifecycleOwner, {
             it?.let {
+                setupRecyclerViewVisibility(
+                    isListFromInternetShowing = false
+                )
                 nowPlayingDbAdapter.submitList(it)
             }
         })

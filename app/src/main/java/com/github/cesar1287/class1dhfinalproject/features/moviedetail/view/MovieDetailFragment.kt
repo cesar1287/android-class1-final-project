@@ -11,6 +11,8 @@ import com.bumptech.glide.Glide
 import com.github.cesar1287.class1dhfinalproject.base.BaseFragment
 import com.github.cesar1287.class1dhfinalproject.databinding.FragmentMovieDetailBinding
 import com.github.cesar1287.class1dhfinalproject.features.moviedetail.viewmodel.MovieDetailViewModel
+import com.github.cesar1287.class1dhfinalproject.model.Movie
+import com.github.cesar1287.class1dhfinalproject.modeldb.toMovie
 import com.github.cesar1287.class1dhfinalproject.utils.Command
 import com.github.cesar1287.class1dhfinalproject.utils.ConstantsApp.Home.KEY_BUNDLE_MOVIE_ID
 
@@ -48,21 +50,11 @@ class MovieDetailFragment : BaseFragment() {
 
     private fun setupObservables() {
         viewModel.onSuccessMovieById.observe(viewLifecycleOwner, {
-            it?.let { movie ->
-                binding?.let { bindingNonNull ->
-                    with(bindingNonNull) {
-                        contentError.isVisible = false
-                        contentLayout.isVisible = true
+            setupData(it)
+        })
 
-                        activity?.let { activityNonNull ->
-                            Glide.with(activityNonNull)
-                                .load(movie.backdrop_path)
-                                .into(ivMovieDetailsPosterImage)
-                        }
-                        tvMovieDetailsDescriptionText.text = movie.overview
-                    }
-                }
-            }
+        viewModel.onSuccessMovieDbByIdFromDb.observe(viewLifecycleOwner, {
+            setupData(it.toMovie())
         })
 
         viewModel.command.observe(viewLifecycleOwner, {
@@ -71,8 +63,7 @@ class MovieDetailFragment : BaseFragment() {
 
                 }
                 is Command.Error -> {
-                    binding?.contentLayout?.isVisible = false
-                    binding?.contentError?.isVisible = true
+                    viewModel.getMovieByIdFromDb(movieId)
                 }
             }
         })
@@ -83,6 +74,22 @@ class MovieDetailFragment : BaseFragment() {
 
         binding?.btMovieDetailsBackIcon?.setOnClickListener {
             activity?.onBackPressed()
+        }
+    }
+
+    private fun setupData(movie: Movie) {
+        binding?.let { bindingNonNull ->
+            with(bindingNonNull) {
+                contentError.isVisible = false
+                contentLayout.isVisible = true
+
+                activity?.let { activityNonNull ->
+                    Glide.with(activityNonNull)
+                        .load(movie.backdrop_path)
+                        .into(ivMovieDetailsPosterImage)
+                }
+                tvMovieDetailsDescriptionText.text = movie.overview
+            }
         }
     }
 

@@ -2,7 +2,7 @@ package com.github.cesar1287.class1dhfinalproject.model
 
 import android.os.Parcelable
 import androidx.recyclerview.widget.DiffUtil
-import com.github.cesar1287.class1dhfinalproject.modeldb.Movie
+import com.github.cesar1287.class1dhfinalproject.modeldb.MovieDb
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -37,8 +37,8 @@ data class Result(
     }
 }
 
-fun Result.toMovieDb(): Movie {
-    return Movie(
+fun Result.toMovieDb(): MovieDb {
+    return MovieDb(
         id = this.id,
         adult = this.adult,
         backdrop_path = this.backdrop_path,
